@@ -79,7 +79,7 @@ const user: {
   isStudent: true,
   school: ["TDTU", "UIT", "FPT", 20],
   scores: [10, 9, 8],
-  contact: [0842030122, "minhduy.dev@gmail.com"],
+  contact: [12345, "minhduy.dev@gmail.com"],
   permission: Permission.ADMIN,
 };
 
