@@ -89,5 +89,5 @@ handleUpdateArray([1, 2, 3, 4, 5], (n) => n * 5); // [5, 10, 15, 20, 25]
 function handleValue(val: number): (n: number) => number {
   return (n: number): number => n * val;
 }
-const value = handleValue(5);
-console.log(value(10)); // 50
+// const value = handleValue(5);
+// console.log(value(10)); // 50
