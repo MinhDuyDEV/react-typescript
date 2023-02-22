@@ -7,17 +7,18 @@ function add3DCoordinate(
 }
 add3DCoordinate([1, 2, 3], [4, 5, 6]);
 
-export function simpleUseState(value: string): [string, (v: string) => void] {
+export function simpleUseState(
+  value: string
+): [() => string, (v: string) => void] {
   return [
-    value,
+    () => value,
     (v: string) => {
       value = v;
-      console.log(value);
     },
   ];
 }
 
-const [value, setValue] = simpleUseState("Duy");
-console.log(value); // Duy
-setValue("Developer");
-console.log(value); // Developer
+const [strGetter, strSetter] = simpleUseState("Duy");
+console.log(strGetter()); // Duy
+strSetter("Developer");
+console.log(strGetter()); // Developer
