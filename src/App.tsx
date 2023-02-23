@@ -1,57 +1,17 @@
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+import useTodo from "./hooks/useTodo";
 
 const Heading = ({ title }: { title: string }) => {
   return <h2 className="font-primary font-bold text-3xl mb-5">{title}</h2>;
 };
 
-type ActionType =
-  | { type: "ADD"; text: string }
-  | { type: "REMOVE"; id: number };
-interface Todo {
-  id: number;
-  text: string;
-}
 interface Data {
   id: number;
   text: string;
 }
-const todoReducer = (state: Todo[], action: ActionType) => {
-  switch (action.type) {
-    case "ADD":
-      return [
-        ...state,
-        {
-          id: state.length,
-          text: action.text,
-        },
-      ];
-      break;
-    case "REMOVE":
-      return state.filter((todo: Todo) => todo.id !== action.id);
-    default:
-      throw new Error("");
-  }
-};
-const initialState: Todo[] = [];
+
 const App = () => {
-  const [toDos, dispatch] = useReducer(todoReducer, initialState);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const onRemoveTodo = (todoId: number) => {
-    dispatch({
-      type: "REMOVE",
-      id: todoId,
-    });
-  };
-  const onAddTodo = () => {
-    if (inputRef.current) {
-      dispatch({
-        type: "ADD",
-        text: inputRef.current.value,
-      });
-      inputRef.current.value = "";
-      inputRef.current.focus();
-    }
-  };
+  const { toDos, onAddTodo, onRemoveTodo, inputRef } = useTodo([]);
   const [data, setData] = useState<Data | null>(null);
   useEffect(() => {
     fetch("./data.json")
