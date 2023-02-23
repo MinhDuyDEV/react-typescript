@@ -54,11 +54,27 @@ const App = () => {
           </button>
         </div>
       </div>
-      <div className="mt-5">
-        {toDos.map((todo) => (
-          <div className="flex items-center gap-x-3 my-3" key={todo.id}>
-            <span>{todo.text}</span>
-            <button
+      <RenderList
+        items={toDos}
+        render={(todo) => (
+          <div className="mt-5 flex flex-col gap-x-5">
+            <div className="flex items-center gap-x-3 my-3" key={todo.id}>
+              <span>{todo.text}</span>
+              <button
+                onClick={() => onRemoveTodo(todo.id)}
+                className="p-2 rounded-lg bg-red-500 font-medium text-white text-sm"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        )}
+      ></RenderList>
+      {/* <div className="mt-5">
+      {toDos.map((todo) => (
+        <div className="flex items-center gap-x-3 my-3" key={todo.id}>
+        <span>{todo.text}</span>
+        <button
               onClick={() => onRemoveTodo(todo.id)}
               className="p-2 rounded-lg bg-red-500 font-medium text-white text-sm"
             >
@@ -66,9 +82,19 @@ const App = () => {
             </button>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
+};
+
+const RenderList = <T,>({
+  items,
+  render,
+}: {
+  items: T[];
+  render: (item: T) => React.ReactNode;
+}) => {
+  return <>{items.map((item) => render(item))}</>;
 };
 
 const List = ({
