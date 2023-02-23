@@ -1,116 +1,87 @@
-import { useEffect } from "react";
-import { Permission } from "./utils/enums";
-import { simpleUseState } from "./utils/tuple";
-import { Age } from "./utils/types";
+import React, { useReducer, useRef } from "react";
 
-const travelItem: {
-  image: string;
-  name: string;
-  totalReviews: number;
-  rating: number;
-  location: string;
-  price: number;
-  date: string;
-  departure: string;
-  features: {
-    freeWifi: boolean;
-    freeParking: boolean;
-    specialOffer: boolean;
-  };
-}[] = [
-  {
-    image: "https://source.unsplash.com/random",
-    name: "MinhDuyDev",
-    totalReviews: 148,
-    rating: 4.8,
-    location: "HCM City",
-    price: 300,
-    date: "22-01-2003",
-    departure: "Vietnam",
-    features: {
-      freeWifi: true,
-      freeParking: true,
-      specialOffer: true,
-    },
-  },
-];
-
-const reviews: {
-  name: string;
-  image: string;
-  stars: number;
-  premiumUser: boolean;
-  date: string;
-}[] = [
-  {
-    name: "Evondev",
-    image: "",
-    stars: 5,
-    premiumUser: true,
-    date: "05/09/2022",
-  },
-  {
-    name: "CharkaUI",
-    image: "",
-    stars: 4,
-    premiumUser: false,
-    date: "03/08/2022",
-  },
-  {
-    name: "React Query",
-    image: "",
-    stars: 3,
-    premiumUser: false,
-    date: "04/08/2022",
-  },
-];
-
-const user: {
-  firstName: string;
-  lastName: string;
-  age: Age;
-  isStudent: boolean;
-  school: (string | number)[];
-  scores: number[];
-  contact: [number, string];
-  permission: Permission;
-} = {
-  firstName: "Minh",
-  lastName: "Duy",
-  age: 20,
-  isStudent: true,
-  school: ["TDTU", "UIT", "FPT", 20],
-  scores: [10, 9, 8],
-  contact: [12345, "minhduy.dev@gmail.com"],
-  permission: Permission.ADMIN,
+const Heading = ({ title }: { title: string }) => {
+  return <h2 className="font-primary font-bold text-3xl mb-5">{title}</h2>;
 };
 
-function displayReview(totalReview: number, name: string, premium: boolean) {
-  return (
-    <>
-      Review total <strong>{totalReview}</strong> | Last reviewed by{" "}
-      <strong>{name}</strong> {premium ? "⭐️" : ""}
-    </>
-  );
+type ActionType =
+  | { type: "ADD"; text: string }
+  | { type: "REMOVE"; id: number };
+interface Todo {
+  id: number;
+  text: string;
 }
+const todoReducer = (state: Todo[], action: ActionType) => {
+  switch (action.type) {
+    case "ADD":
+      return [
+        ...state,
+        {
+          id: state.length,
+          text: action.text,
+        },
+      ];
+      break;
+    case "REMOVE":
+      return state.filter((todo: Todo) => todo.id !== action.id);
+    default:
+      throw new Error("");
+  }
+};
 
-function App() {
+const initialState: Todo[] = [];
+const App = () => {
+  const [toDos, dispatch] = useReducer(todoReducer, initialState);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const onRemoveTodo = (todoId: number) => {
+    dispatch({
+      type: "REMOVE",
+      id: todoId,
+    });
+  };
+  const onAddTodo = () => {
+    if (inputRef.current) {
+      dispatch({
+        type: "ADD",
+        text: inputRef.current.value,
+      });
+      inputRef.current.value = "";
+      inputRef.current.focus();
+    }
+  };
   return (
     <div>
-      <div className="review">
-        <div className="review-image">
-          <img src="https://source.unsplash.com/random" alt="" />
+      <Heading title="Todo App"></Heading>
+      <div className="max-w-sm">
+        <div className="flex items-center gap-x-5">
+          <input
+            type="text"
+            className="p-4 border outline-none border-slate-400 rounded-lg"
+            ref={inputRef}
+          />
+          <button
+            onClick={onAddTodo}
+            className="p-4 rounded-lg bg-blue-500 text-white text-center"
+          >
+            Add todo
+          </button>
         </div>
-        <div className="review-info">
-          {displayReview(
-            reviews.length,
-            reviews[0].name,
-            reviews[0].premiumUser
-          )}
-        </div>
+      </div>
+      <div className="mt-5">
+        {toDos.map((todo) => (
+          <div className="flex items-center gap-x-3 my-3" key={todo.id}>
+            <span>{todo.text}</span>
+            <button
+              onClick={() => onRemoveTodo(todo.id)}
+              className="p-2 rounded-lg bg-red-500 font-medium text-white text-sm"
+            >
+              Remove
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );
-}
+};
 
 export default App;
